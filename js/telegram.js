@@ -23,18 +23,10 @@ export function initTelegram() {
   // tg.expand() не вызываем, поэтому окно остаётся в compact-режиме
 }
 
-// Лёгкая вибрация: 'light' | 'medium' | 'heavy'
+// Вибрация: 'light' | 'medium' | 'heavy' | 'success' | 'error'
 export function haptic(type = 'light') {
-  tg?.HapticFeedback?.impactOccurred(type);
-}
-
-// Отправка сообщения боту (приложение после этого закроется).
-// Возвращает false, если мы не в Telegram.
-// Важно: sendData работает, только если Mini App открыт кнопкой reply-клавиатуры.
-// Если открываешь через Menu Button, данные надо слать на свой сервер через fetch(),
-// передавая tg.initData, чтобы сервер мог проверить подлинность.
-export function sendToBot(payload) {
-  if (!inTelegram) return false;
-  tg.sendData(JSON.stringify(payload));
-  return true;
+  const feedback = tg?.HapticFeedback;
+  if (!feedback) return;
+  if (type === 'success' || type === 'error') feedback.notificationOccurred(type);
+  else feedback.impactOccurred(type);
 }

@@ -4,5 +4,6 @@ export const CONFIG = {
   // Когда подключишь бота, поставь false.
   demo: true,
   currency: '₽',
-  maxDeviceDots: 8, // сколько точек рисовать у счётчика устройств
+  dailyPrice: 2,     // сколько стоит один день, ₽
+  maxDeviceDots: 12, // больше точек не рисуем
 };

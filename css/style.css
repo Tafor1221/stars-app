@@ -1,8 +1,7 @@
 /* ---------- Цвета ----------
    Фон, текст и подсказки берём из темы Telegram (--tg-theme-*), поэтому
    страница сама становится светлой или тёмной вместе с Telegram.
-   Если страница открыта в обычном браузере, работают запасные --fb-*.
-   Дизайн монохромный: главная кнопка это "текст на фоне" наоборот. */
+   Если страница открыта в обычном браузере, работают запасные --fb-*. */
 :root {
   --fb-bg: #f7f7f5;
   --fb-text: #141414;
@@ -57,12 +56,11 @@ button { touch-action: manipulation; }
 .header { display: flex; justify-content: space-between; align-items: flex-start; }
 .stat { display: grid; line-height: 1.25; }
 .stat--right { justify-items: end; }
-.stat__value { font-size: 17px; font-weight: 700; letter-spacing: -0.01em; font-variant-numeric: tabular-nums; }
-.stat__value--regular { font-size: 15px; font-weight: 600; display: inline-flex; align-items: center; gap: 7px; }
+.stat__value { display: inline-flex; align-items: center; gap: 7px; font-size: 15px; font-weight: 600; font-variant-numeric: tabular-nums; }
 .status-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--ok); }
 .status-dot.is-off { background: var(--error); }
 
-/* ---------- Сколько осталось ---------- */
+/* ---------- Баланс ---------- */
 .hero { display: grid; gap: 2px; }
 .hero__row { display: flex; align-items: baseline; gap: 10px; }
 .hero__value {
@@ -72,7 +70,7 @@ button { touch-action: manipulation; }
   letter-spacing: -0.05em;
   font-variant-numeric: tabular-nums;
 }
-.hero__unit { font-size: 22px; font-weight: 500; color: var(--hint); }
+.hero__unit { font-size: 28px; font-weight: 500; color: var(--hint); }
 .hero__hint { min-height: 22px; font-size: 15px; color: var(--hint); }
 
 /* ---------- Устройства ---------- */
@@ -84,13 +82,12 @@ button { touch-action: manipulation; }
   border-bottom: 1.5px solid var(--line);
 }
 .row__label { font-size: 17px; }
-.row__value { display: flex; align-items: center; gap: 12px; font-size: 17px; font-weight: 600; font-variant-numeric: tabular-nums; }
-.dots { display: flex; gap: 5px; }
-.dots i { width: 8px; height: 8px; border-radius: 50%; border: 1.5px solid var(--line); }
+.dots { display: flex; gap: 8px; }
+.dots i { width: 11px; height: 11px; border-radius: 50%; border: 1.5px solid var(--line); }
 .dots i.is-on { background: var(--text); border-color: var(--text); }
 
 /* ---------- Страны ---------- */
-.countries { display: grid; gap: 8px; }
+.countries { display: grid; grid-template-columns: minmax(0, 1fr); gap: 8px; }
 .countries__head { display: flex; justify-content: space-between; }
 .countries__strip {
   display: flex;
@@ -117,35 +114,56 @@ button { touch-action: manipulation; }
 .flag { width: 20px; height: 20px; flex: none; border-radius: 50%; box-shadow: 0 0 0 1px var(--line); }
 .flag--code { display: grid; place-items: center; font-size: 8px; font-weight: 700; color: var(--hint); }
 
-/* ---------- Кнопка ---------- */
-.submit {
+/* ---------- Ключ для Happ ---------- */
+.key { display: grid; grid-template-columns: minmax(0, 1fr); gap: 8px; }
+.key__box {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  height: 56px;
-  padding: 0 24px;
-  border: 0;
-  border-radius: 28px;
-  background: var(--text);
-  color: var(--bg);
-  font: inherit;
-  font-size: 17px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: transform 0.1s;
+  gap: 8px;
+  height: 52px;
+  padding: 0 6px 0 16px;
+  border: 1.5px solid var(--line);
+  border-radius: 14px;
 }
-.submit:active { transform: scale(0.98); }
+.key__value {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font: 14px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  user-select: all;
+}
+/* Кнопка без фона: только иконка */
+.key__copy {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  flex: none;
+  border: 0;
+  background: transparent;
+  color: var(--text);
+  cursor: pointer;
+  transition: opacity 0.1s;
+}
+.key__copy:active { opacity: 0.5; }
+.key__copy:disabled { opacity: 0.3; cursor: default; }
+.icon { grid-area: 1 / 1; width: 22px; height: 22px; transition: opacity 0.15s, transform 0.15s; }
+.icon-check { opacity: 0; transform: scale(0.6); color: var(--ok); }
+.key__copy.is-copied .icon-copy { opacity: 0; transform: scale(0.6); }
+.key__copy.is-copied .icon-check { opacity: 1; transform: none; }
 
 /* ---------- Низкое окно (compact на маленьких экранах) ---------- */
 @media (max-height: 520px) {
   .app { gap: 14px; }
   .hero__value { font-size: clamp(44px, 15vw, 60px); }
   .row { height: 42px; }
+  .key__box { height: 48px; }
 }
 @media (max-height: 440px) {
   .app { gap: 10px; padding-top: 4px; }
   .hero__hint { min-height: 18px; }
-  .submit { height: 50px; }
 }
 
 @media (prefers-reduced-motion: reduce) {

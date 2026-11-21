@@ -13,37 +13,34 @@
 <body>
   <main class="app">
 
-    <!-- Шапка: баланс и статус подписки -->
+    <!-- Шапка: тариф и статус -->
     <header class="header">
       <div class="stat">
-        <span class="caption">Баланс</span>
-        <span class="stat__value" id="balance">0 ₽</span>
+        <span class="caption">Тариф</span>
+        <span class="stat__value" id="tariff">—</span>
       </div>
       <div class="stat stat--right">
         <span class="caption">Статус</span>
-        <span class="stat__value stat__value--regular">
+        <span class="stat__value">
           <span class="status-dot" id="statusDot"></span><span id="status">—</span>
         </span>
       </div>
     </header>
 
-    <!-- Сколько осталось: дни, а в последний день часы -->
+    <!-- Баланс: главное число, под ним на сколько его хватит -->
     <section class="hero">
-      <span class="caption">Подписка</span>
+      <span class="caption">Баланс</span>
       <div class="hero__row">
-        <span class="hero__value" id="timeValue">0</span>
-        <span class="hero__unit" id="timeUnit">дней</span>
+        <span class="hero__value" id="balance">0</span>
+        <span class="hero__unit">₽</span>
       </div>
-      <span class="hero__hint" id="timeHint"></span>
+      <span class="hero__hint" id="hint"></span>
     </section>
 
-    <!-- Устройства -->
+    <!-- Устройства: закрашенные точки заняты, пустые свободны -->
     <div class="row">
       <span class="row__label">Устройства</span>
-      <span class="row__value">
-        <span class="dots" id="dots"></span>
-        <span id="devices">0/0</span>
-      </span>
+      <span class="dots" id="dots" role="img"></span>
     </div>
 
     <!-- Страны -->
@@ -55,11 +52,23 @@
       <div class="countries__strip" id="countries"></div>
     </section>
 
-    <button type="button" class="submit" id="renew">
-      <span>Продлить подписку</span>
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
-           stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-    </button>
+    <!-- Ключ для Happ: ссылка и кнопка "копировать" -->
+    <section class="key">
+      <span class="caption">Ключ для Happ</span>
+      <div class="key__box">
+        <span class="key__value" id="keyValue">—</span>
+        <button type="button" class="key__copy" id="copy" aria-label="Скопировать ключ">
+          <svg class="icon icon-copy" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+               stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect x="9" y="9" width="11" height="11" rx="2.5"/><path d="M5 15V6.5A2.5 2.5 0 0 1 7.5 4H15"/>
+          </svg>
+          <svg class="icon icon-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+               stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M5 12.5l4.5 4.5L19 7.5"/>
+          </svg>
+        </button>
+      </div>
+    </section>
 
   </main>
 
