@@ -1,20 +1,22 @@
 import { CONFIG } from './config.js';
 import { inTelegram, initTelegram, getOwnUsername, haptic, sendOrder } from './telegram.js';
-import { mountStickers } from './sticker.js';
 
 const USERNAME_RE = /^[A-Za-z][A-Za-z0-9_]{4,31}$/;
 
 const $ = (id) => document.getElementById(id);
 const el = {
   balance: $('balance'),
+  star: $('star'),
   amount: $('amount'),
-  price: $('price'),
+  rate: $('rate'),
   chips: $('chips'),
   username: $('username'),
   self: $('self'),
   submit: $('submit'),
   status: $('status'),
 };
+
+let lastStars = 0;
 
 // ---------- Форматирование ----------
 const formatNumber = (n) => n.toLocaleString('ru-RU');
@@ -30,6 +32,10 @@ function showBalance() {
   // Баланс передаёт бот в ссылке: .../index.html?balance=1250
   const balance = Number(new URLSearchParams(location.search).get('balance')) || 0;
   el.balance.textContent = formatMoney(balance);
+}
+
+function showRate() {
+  el.rate.textContent = `1 ★ = ${formatMoney(CONFIG.pricePerStar)}`;
 }
 
 function showStatus(text = '', isError = false) {
@@ -48,22 +54,31 @@ function renderChips() {
   }
 }
 
+// Короткая анимация звезды при смене числа
+function popStar() {
+  el.star.classList.remove('pop');
+  void el.star.getBoundingClientRect(); // перезапуск анимации
+  el.star.classList.add('pop');
+}
+
 // Пересчитывает всё, что зависит от количества звёзд
 function update() {
   const stars = readStars();
   const valid = isStarsValid(stars);
   const total = formatMoney(stars * CONFIG.pricePerStar);
 
-  el.price.textContent = stars ? total : '';
   el.submit.disabled = !valid;
-  el.submit.textContent = valid ? `Купить ${formatNumber(stars)} ⭐ · ${total}` : 'Введите количество';
+  el.submit.textContent = valid ? `Купить ${formatNumber(stars)} ★ · ${total}` : 'Введите количество';
 
   for (const chip of el.chips.children) {
     chip.classList.toggle('is-active', Number(chip.dataset.value) === stars);
   }
 
+  if (stars && stars !== lastStars) popStar();
+  lastStars = stars;
+
   const rangeError = stars && !valid;
-  showStatus(rangeError ? `От ${formatNumber(CONFIG.minStars)} до ${formatNumber(CONFIG.maxStars)} ⭐` : '', true);
+  showStatus(rangeError ? `От ${formatNumber(CONFIG.minStars)} до ${formatNumber(CONFIG.maxStars)} ★` : '', true);
 }
 
 // ---------- Действия ----------
@@ -98,7 +113,7 @@ function onSubmit() {
 
   haptic('medium');
   if (!sendOrder(order)) {
-    showStatus(`Демо: заказ ${formatNumber(stars)} ⭐ для @${username} не отправлен, страница открыта вне Telegram`);
+    showStatus(`Демо: заказ ${formatNumber(stars)} ★ для @${username} не отправлен, страница открыта вне Telegram`);
   }
 }
 
@@ -127,6 +142,6 @@ el.submit.addEventListener('click', onSubmit);
 // ---------- Запуск ----------
 initTelegram();
 showBalance();
+showRate();
 renderChips();
 update();
-mountStickers();

@@ -7,39 +7,47 @@
 
   <!-- SDK Telegram: даёт window.Telegram.WebApp и CSS-переменные темы (--tg-theme-*) -->
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
-  <!-- Проигрыватель анимированных стикеров (.tgs это Lottie-анимация) -->
-  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
-
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
   <main class="app">
 
-    <!-- Шапка: баланс в рублях -->
+    <!-- Шапка -->
     <header class="header">
-      <span class="header__label">Баланс</span>
-      <span class="header__value" id="balance">0 ₽</span>
+      <h1 class="header__title">Звёзды</h1>
+      <div class="balance">
+        <span class="balance__label">Баланс</span>
+        <span class="balance__value" id="balance">0 ₽</span>
+      </div>
     </header>
 
-    <!-- Анимированный стикер. Эмодзи внутри — заглушка, пока файла .tgs нет -->
-    <div class="sticker sticker--big" data-tgs="assets/duck.tgs">🦆</div>
-
-    <!-- Количество звёзд + быстрые варианты -->
-    <section class="group">
-      <label class="field">
-        <span class="sticker sticker--icon" data-tgs="assets/star.tgs">⭐</span>
-        <input id="amount" type="text" inputmode="numeric" autocomplete="off" maxlength="6"
-               placeholder="Количество звёзд">
-        <span class="field__hint" id="price"></span>
-      </label>
+    <!-- Количество: большое число, курс и быстрые варианты -->
+    <section class="card">
+      <div class="amount">
+        <span class="star" aria-hidden="true">
+          <svg id="star" viewBox="0 0 24 24">
+            <defs>
+              <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0" stop-color="#ffe27a"/>
+                <stop offset="1" stop-color="#ff9f1a"/>
+              </linearGradient>
+            </defs>
+            <polygon fill="url(#gold)" stroke="url(#gold)" stroke-width="2" stroke-linejoin="round"
+                     points="12,2.8 14.8,9 21.5,9.7 16.5,14.2 17.9,20.8 12,17.4 6.1,20.8 7.5,14.2 2.5,9.7 9.2,9"/>
+          </svg>
+        </span>
+        <input class="amount__input" id="amount" type="text" inputmode="numeric"
+               autocomplete="off" maxlength="6" placeholder="0" aria-label="Количество звёзд">
+      </div>
+      <p class="card__hint" id="rate"></p>
       <div class="chips" id="chips"></div>
     </section>
 
     <!-- Получатель -->
     <label class="field">
-      <span class="field__hint">@</span>
+      <span class="field__prefix">@</span>
       <input id="username" type="text" autocomplete="off" autocapitalize="off" spellcheck="false"
-             maxlength="32" placeholder="username">
+             maxlength="32" placeholder="username получателя">
       <button type="button" class="field__action" id="self">Себе</button>
     </label>
 
