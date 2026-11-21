@@ -6,17 +6,16 @@ const USERNAME_RE = /^[A-Za-z][A-Za-z0-9_]{4,31}$/;
 const $ = (id) => document.getElementById(id);
 const el = {
   balance: $('balance'),
-  star: $('star'),
-  amount: $('amount'),
   rate: $('rate'),
+  amount: $('amount'),
+  hint: $('hint'),
   chips: $('chips'),
   username: $('username'),
   self: $('self'),
   submit: $('submit'),
+  price: $('price'),
   status: $('status'),
 };
-
-let lastStars = 0;
 
 // ---------- Форматирование ----------
 const formatNumber = (n) => n.toLocaleString('ru-RU');
@@ -28,10 +27,11 @@ const readUsername = () => el.username.value.trim();
 const isStarsValid = (n) => n >= CONFIG.minStars && n <= CONFIG.maxStars;
 
 // ---------- Отрисовка ----------
-function showBalance() {
+function showHeader() {
   // Баланс передаёт бот в ссылке: .../index.html?balance=1250
   const balance = Number(new URLSearchParams(location.search).get('balance')) || 0;
   el.balance.textContent = formatMoney(balance);
+  el.rate.textContent = `1 звезда = ${formatMoney(CONFIG.pricePerStar)}`;
 }
 
 function showStatus(text = '', isError = false) {
@@ -50,36 +50,23 @@ function renderChips() {
   }
 }
 
-// Короткая анимация звезды при смене числа
-function popStar() {
-  el.star.classList.remove('pop');
-  void el.star.getBoundingClientRect(); // перезапуск анимации
-  el.star.classList.add('pop');
-}
-
 // Пересчитывает всё, что зависит от количества звёзд
 function update() {
   const stars = readStars();
   const valid = isStarsValid(stars);
   const total = formatMoney(stars * CONFIG.pricePerStar);
-  const rate = `1 звезда = ${formatMoney(CONFIG.pricePerStar)}`;
 
-  // Ширина поля подстраивается под число, чтобы курсор стоял сразу за цифрами
-  el.amount.style.setProperty('--len', Math.max(1, el.amount.value.length));
-  el.rate.textContent = stars ? `≈ ${total} · ${rate}` : rate;
+  if (!stars) el.hint.textContent = `Минимум ${formatNumber(CONFIG.minStars)} звёзд`;
+  else if (valid) el.hint.textContent = `≈ ${total}`;
+  else el.hint.textContent = `От ${formatNumber(CONFIG.minStars)} до ${formatNumber(CONFIG.maxStars)} звёзд`;
+  el.hint.classList.toggle('is-error', Boolean(stars) && !valid);
 
+  el.price.textContent = valid ? total : '—';
   el.submit.disabled = !valid;
-  el.submit.textContent = valid ? `Купить за ${total}` : 'Введите количество';
 
   for (const chip of el.chips.children) {
     chip.classList.toggle('is-active', Number(chip.dataset.value) === stars);
   }
-
-  if (stars && stars !== lastStars) popStar();
-  lastStars = stars;
-
-  const rangeError = stars && !valid;
-  showStatus(rangeError ? `От ${formatNumber(CONFIG.minStars)} до ${formatNumber(CONFIG.maxStars)} звёзд` : '', true);
 }
 
 // ---------- Действия ----------
@@ -143,11 +130,18 @@ el.username.addEventListener('keydown', (event) => {
   if (event.key === 'Enter' && !el.submit.disabled) onSubmit();
 });
 
+// Когда открывается клавиатура, поле не должно оказаться под ней
+document.addEventListener('focusin', (event) => {
+  if (event.target.matches('input')) {
+    setTimeout(() => event.target.scrollIntoView({ block: 'center', behavior: 'smooth' }), 300);
+  }
+});
+
 el.self.addEventListener('click', onSelfClick);
 el.submit.addEventListener('click', onSubmit);
 
 // ---------- Запуск ----------
 initTelegram();
-showBalance();
+showHeader();
 renderChips();
 update();

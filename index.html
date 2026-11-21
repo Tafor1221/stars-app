@@ -3,6 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="color-scheme" content="light dark">
   <title>Telegram Stars</title>
 
   <!-- SDK Telegram: даёт window.Telegram.WebApp и CSS-переменные темы (--tg-theme-*) -->
@@ -12,31 +13,24 @@
 <body>
   <main class="app">
 
-    <!-- Шапка: баланс -->
+    <!-- Шапка: баланс и курс -->
     <header class="header">
-      <span class="header__label">Баланс</span>
-      <span class="header__value" id="balance">0 ₽</span>
+      <div class="stat">
+        <span class="caption">Баланс</span>
+        <span class="stat__value" id="balance">0 ₽</span>
+      </div>
+      <div class="stat stat--right">
+        <span class="caption">Курс</span>
+        <span class="stat__value stat__value--regular" id="rate"></span>
+      </div>
     </header>
 
     <!-- Количество: нажатие в любом месте блока ставит курсор в число -->
     <label class="hero">
-      <span class="hero__row">
-        <span class="star" aria-hidden="true">
-          <svg id="star" viewBox="0 0 24 24">
-            <defs>
-              <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1">
-                <stop offset="0" stop-color="#ffe27a"/>
-                <stop offset="1" stop-color="#ff9f1a"/>
-              </linearGradient>
-            </defs>
-            <polygon fill="url(#gold)" stroke="url(#gold)" stroke-width="2" stroke-linejoin="round"
-                     points="12,2.8 14.8,9 21.5,9.7 16.5,14.2 17.9,20.8 12,17.4 6.1,20.8 7.5,14.2 2.5,9.7 9.2,9"/>
-          </svg>
-        </span>
-        <input class="hero__input" id="amount" type="text" inputmode="numeric" enterkeyhint="next"
-               autocomplete="off" maxlength="6" placeholder="0" aria-label="Количество звёзд">
-      </span>
-      <span class="hero__hint" id="rate"></span>
+      <span class="caption">Количество звёзд</span>
+      <input class="hero__input" id="amount" type="text" inputmode="numeric" enterkeyhint="next"
+             autocomplete="off" maxlength="6" placeholder="0">
+      <span class="hero__hint" id="hint"></span>
     </label>
 
     <!-- Быстрый выбор -->
@@ -50,7 +44,10 @@
       <button type="button" class="field__action" id="self">Себе</button>
     </label>
 
-    <button type="button" class="submit" id="submit" disabled>Введите количество</button>
+    <button type="button" class="submit" id="submit" disabled>
+      <span>Купить</span>
+      <span id="price">—</span>
+    </button>
     <p class="status" id="status"></p>
 
   </main>

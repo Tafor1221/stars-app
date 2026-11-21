@@ -15,9 +15,11 @@ export function initTelegram() {
   if (!inTelegram) return;
   applyTheme();
   tg.onEvent('themeChanged', applyTheme);
-  tg.setHeaderColor?.('bg_color');     // верхняя панель сливается с фоном страницы
+  // Родные панели Telegram сливаются с фоном страницы
+  tg.setHeaderColor?.('bg_color');
   tg.setBackgroundColor?.('bg_color');
-  tg.ready();                          // сообщаем Telegram, что страница загружена
+  tg.setBottomBarColor?.('bg_color');
+  tg.ready(); // сообщаем Telegram, что страница загружена
   // tg.expand() не вызываем, поэтому окно остаётся в compact-режиме
 }
 
