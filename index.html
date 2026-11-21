@@ -12,18 +12,15 @@
 <body>
   <main class="app">
 
-    <!-- Шапка -->
+    <!-- Шапка: баланс -->
     <header class="header">
-      <h1 class="header__title">Звёзды</h1>
-      <div class="balance">
-        <span class="balance__label">Баланс</span>
-        <span class="balance__value" id="balance">0 ₽</span>
-      </div>
+      <span class="header__label">Баланс</span>
+      <span class="header__value" id="balance">0 ₽</span>
     </header>
 
-    <!-- Количество: большое число, курс и быстрые варианты -->
-    <section class="card">
-      <div class="amount">
+    <!-- Количество: нажатие в любом месте блока ставит курсор в число -->
+    <label class="hero">
+      <span class="hero__row">
         <span class="star" aria-hidden="true">
           <svg id="star" viewBox="0 0 24 24">
             <defs>
@@ -36,18 +33,20 @@
                      points="12,2.8 14.8,9 21.5,9.7 16.5,14.2 17.9,20.8 12,17.4 6.1,20.8 7.5,14.2 2.5,9.7 9.2,9"/>
           </svg>
         </span>
-        <input class="amount__input" id="amount" type="text" inputmode="numeric"
+        <input class="hero__input" id="amount" type="text" inputmode="numeric" enterkeyhint="next"
                autocomplete="off" maxlength="6" placeholder="0" aria-label="Количество звёзд">
-      </div>
-      <p class="card__hint" id="rate"></p>
-      <div class="chips" id="chips"></div>
-    </section>
+      </span>
+      <span class="hero__hint" id="rate"></span>
+    </label>
+
+    <!-- Быстрый выбор -->
+    <div class="chips" id="chips"></div>
 
     <!-- Получатель -->
     <label class="field">
       <span class="field__prefix">@</span>
-      <input id="username" type="text" autocomplete="off" autocapitalize="off" spellcheck="false"
-             maxlength="32" placeholder="username получателя">
+      <input id="username" type="text" enterkeyhint="done" autocomplete="off" autocapitalize="off"
+             spellcheck="false" maxlength="32" placeholder="username получателя">
       <button type="button" class="field__action" id="self">Себе</button>
     </label>
 

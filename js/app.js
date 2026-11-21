@@ -34,10 +34,6 @@ function showBalance() {
   el.balance.textContent = formatMoney(balance);
 }
 
-function showRate() {
-  el.rate.textContent = `1 ★ = ${formatMoney(CONFIG.pricePerStar)}`;
-}
-
 function showStatus(text = '', isError = false) {
   el.status.textContent = text;
   el.status.classList.toggle('status--error', isError);
@@ -66,9 +62,14 @@ function update() {
   const stars = readStars();
   const valid = isStarsValid(stars);
   const total = formatMoney(stars * CONFIG.pricePerStar);
+  const rate = `1 звезда = ${formatMoney(CONFIG.pricePerStar)}`;
+
+  // Ширина поля подстраивается под число, чтобы курсор стоял сразу за цифрами
+  el.amount.style.setProperty('--len', Math.max(1, el.amount.value.length));
+  el.rate.textContent = stars ? `≈ ${total} · ${rate}` : rate;
 
   el.submit.disabled = !valid;
-  el.submit.textContent = valid ? `Купить ${formatNumber(stars)} ★ · ${total}` : 'Введите количество';
+  el.submit.textContent = valid ? `Купить за ${total}` : 'Введите количество';
 
   for (const chip of el.chips.children) {
     chip.classList.toggle('is-active', Number(chip.dataset.value) === stars);
@@ -78,7 +79,7 @@ function update() {
   lastStars = stars;
 
   const rangeError = stars && !valid;
-  showStatus(rangeError ? `От ${formatNumber(CONFIG.minStars)} до ${formatNumber(CONFIG.maxStars)} ★` : '', true);
+  showStatus(rangeError ? `От ${formatNumber(CONFIG.minStars)} до ${formatNumber(CONFIG.maxStars)} звёзд` : '', true);
 }
 
 // ---------- Действия ----------
@@ -113,7 +114,7 @@ function onSubmit() {
 
   haptic('medium');
   if (!sendOrder(order)) {
-    showStatus(`Демо: заказ ${formatNumber(stars)} ★ для @${username} не отправлен, страница открыта вне Telegram`);
+    showStatus(`Демо: заказ ${formatNumber(stars)} звёзд для @${username} не отправлен, страница открыта вне Telegram`);
   }
 }
 
@@ -121,6 +122,9 @@ function onSubmit() {
 el.amount.addEventListener('input', () => {
   el.amount.value = el.amount.value.replace(/\D/g, ''); // только цифры
   update();
+});
+el.amount.addEventListener('keydown', (event) => {
+  if (event.key === 'Enter') el.username.focus();
 });
 
 el.chips.addEventListener('click', (event) => {
@@ -135,6 +139,9 @@ el.username.addEventListener('input', () => {
   el.username.value = el.username.value.replace(/[\s@]/g, ''); // без пробелов и @
   showStatus();
 });
+el.username.addEventListener('keydown', (event) => {
+  if (event.key === 'Enter' && !el.submit.disabled) onSubmit();
+});
 
 el.self.addEventListener('click', onSelfClick);
 el.submit.addEventListener('click', onSubmit);
@@ -142,6 +149,5 @@ el.submit.addEventListener('click', onSubmit);
 // ---------- Запуск ----------
 initTelegram();
 showBalance();
-showRate();
 renderChips();
 update();

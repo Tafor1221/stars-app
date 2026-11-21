@@ -6,9 +6,18 @@ const tg = window.Telegram?.WebApp ?? null;
 // SDK подключён и в обычном браузере, но initData есть только внутри Telegram
 export const inTelegram = Boolean(tg?.initData);
 
+// Светлая или тёмная тема Telegram (css подстраивается по атрибуту data-theme)
+function applyTheme() {
+  document.documentElement.dataset.theme = tg.colorScheme;
+}
+
 export function initTelegram() {
   if (!inTelegram) return;
-  tg.ready(); // сообщаем Telegram, что страница загружена
+  applyTheme();
+  tg.onEvent('themeChanged', applyTheme);
+  tg.setHeaderColor?.('bg_color');     // верхняя панель сливается с фоном страницы
+  tg.setBackgroundColor?.('bg_color');
+  tg.ready();                          // сообщаем Telegram, что страница загружена
   // tg.expand() не вызываем, поэтому окно остаётся в compact-режиме
 }
 
