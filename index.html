@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<title>Telegram Stars</title>
+<style>
+:root{
+  --bg:#ffffff;--card:#f3f4f6;--text:#111827;--hint:#6b7280;--accent:#2f80ed;--accent-text:#ffffff;--border:#e5e7eb;--err:#e5484d;
+  color-scheme:light;box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){--bg:#17181c;--card:#23252b;--text:#f3f4f6;--hint:#9ca3af;--border:#2f323a;color-scheme:dark}
+}
+:root[data-theme="dark"]{--bg:#17181c;--card:#23252b;--text:#f3f4f6;--hint:#9ca3af;--border:#2f323a;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;background:var(--bg);color:var(--text);font:16px/1.4 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+.app{max-width:420px;margin:0 auto;padding:16px 16px 20px;display:flex;flex-direction:column;gap:14px}
+.hero{display:flex;flex-direction:column;align-items:center;gap:4px;text-align:center}
+.duck{width:84px;height:84px;overflow:visible}
+.duck .bob{animation:bob 2.4s ease-in-out infinite;transform-origin:50% 90%}
+.duck .eye{animation:blink 4s infinite;transform-origin:center;transform-box:fill-box}
+.duck .star{animation:twinkle 2.4s ease-in-out infinite;transform-box:fill-box;transform-origin:center}
+@keyframes bob{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-5px) rotate(2deg)}}
+@keyframes blink{0%,92%,100%{transform:scaleY(1)}95%{transform:scaleY(.1)}}
+@keyframes twinkle{0%,100%{transform:scale(1) rotate(0)}50%{transform:scale(1.25) rotate(18deg)}}
+@media (prefers-reduced-motion:reduce){.duck *{animation:none!important}}
+h1{font-size:20px;margin:0;font-weight:700}
+.sub{color:var(--hint);font-size:13px;margin:0}
+.field{display:flex;align-items:center;background:var(--card);border:1.5px solid transparent;border-radius:14px;padding:0 14px;transition:border-color .15s}
+.field:focus-within{border-color:var(--accent)}
+.field.bad{border-color:var(--err)}
+.field span{color:var(--hint);font-size:17px;margin-right:2px}
+.field input{flex:1;min-width:0;border:0;outline:0;background:transparent;color:var(--text);font:inherit;font-size:17px;padding:14px 0}
+.label{font-size:13px;color:var(--hint);margin:0 0 -6px 4px}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.chip{background:var(--card);color:var(--text);border:1.5px solid transparent;border-radius:14px;padding:11px 4px;font:inherit;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px;transition:transform .1s,border-color .15s}
+.chip:active{transform:scale(.96)}
+.chip b{font-size:16px}
+.chip small{color:var(--hint);font-size:12px}
+.chip.on{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 14%,var(--card))}
+.custom{display:none}
+.custom.show{display:flex}
+.btn{width:100%;border:0;border-radius:14px;background:var(--accent);color:var(--accent-text);font:inherit;font-size:17px;font-weight:600;padding:15px;cursor:pointer;transition:opacity .15s,transform .1s}
+.btn:active{transform:scale(.98)}
+.btn:disabled{opacity:.45;cursor:default}
+.msg{min-height:18px;text-align:center;font-size:13px;color:var(--hint);margin:0}
+.msg.err{color:var(--err)}
+</style>
+</head>
+<body>
+<main class="app">
+  <div class="hero">
+    <svg class="duck" viewBox="0 0 100 100" aria-hidden="true">
+      <g class="bob">
+        <ellipse cx="50" cy="66" rx="28" ry="20" fill="#ffd23f"/>
+        <path d="M70 62c10-2 14-10 12-16-6 2-12 6-12 16z" fill="#f5b800"/>
+        <circle cx="42" cy="38" r="19" fill="#ffd23f"/>
+        <path d="M24 40c-8 0-12 4-12 6s6 5 14 3z" fill="#ff8a00"/>
+        <circle class="eye" cx="43" cy="34" r="3" fill="#1f2937"/>
+        <ellipse cx="50" cy="70" rx="14" ry="9" fill="#f5b800"/>
+        <g class="star"><path d="M80 16l3.2 6.6 7.3 1-5.3 5.1 1.3 7.2-6.5-3.5-6.5 3.5 1.3-7.2-5.3-5.1 7.3-1z" fill="#ffb300"/></g>
+      </g>
+    </svg>
+    <h1>Telegram Stars</h1>
+    <p class="sub">Быстрая покупка звёзд</p>
+  </div>
+
+  <p class="label">Получатель</p>
+  <label class="field" id="uField">
+    <span>@</span>
+    <input id="user" type="text" inputmode="text" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="username" maxlength="33">
+  </label>
+
+  <p class="label">Количество звёзд</p>
+  <div class="grid" id="grid"></div>
+  <label class="field custom" id="cField">
+    <span>★</span>
+    <input id="custom" type="text" inputmode="numeric" autocomplete="off" placeholder="Своё количество (от 50)" maxlength="6">
+  </label>
+
+  <button class="btn" id="buy" disabled>Выберите сумму</button>
+  <p class="msg" id="msg"></p>
+</main>
+
+<script>
+// ===== Настройки =====
+var CONFIG = {
+  pricePerStar: 1.5,      // цена одной звезды
+  currency: "₽",
+  packs: [50, 100, 250, 500, 1000],
+  minCustom: 50,
+  maxCustom: 100000
+};
+
+var tg = (window.Telegram && window.Telegram.WebApp) || null;
+var root = document.documentElement;
+var state = { amount: 0, custom: false };
+
+// ===== Интеграция с Telegram (если SDK подключён) =====
+if (tg) {
+  try {
+    tg.ready();
+    // Компактный режим: НЕ вызываем tg.expand()
+    if (tg.colorScheme) root.setAttribute("data-theme", tg.colorScheme);
+    var p = tg.themeParams || {};
+    if (p.button_color) root.style.setProperty("--accent", p.button_color);
+    if (p.button_text_color) root.style.setProperty("--accent-text", p.button_text_color);
+  } catch (e) {}
+}
+
+function fmt(n) { return n.toLocaleString("ru-RU"); }
+function price(n) {
+  var v = n * CONFIG.pricePerStar;
+  return fmt(Math.round(v * 100) / 100) + " " + CONFIG.currency;
+}
+function haptic(kind) {
+  try { tg && tg.HapticFeedback && tg.HapticFeedback.impactOccurred(kind || "light"); } catch (e) {}
+}
+
+// ===== Пакеты =====
+var grid = document.getElementById("grid");
+var cField = document.getElementById("cField");
+var customInput = document.getElementById("custom");
+
+function addChip(label, sub, onClick) {
+  var b = document.createElement("button");
+  b.type = "button";
+  b.className = "chip";
+  b.innerHTML = "<b>" + label + "</b><small>" + sub + "</small>";
+  b.addEventListener("click", function () { haptic(); onClick(b); });
+  grid.appendChild(b);
+  return b;
+}
+function clearOn() {
+  Array.prototype.forEach.call(grid.children, function (c) { c.classList.remove("on"); });
+}
+
+CONFIG.packs.forEach(function (n) {
+  addChip("★ " + fmt(n), price(n), function (el) {
+    clearOn(); el.classList.add("on");
+    state.custom = false; cField.classList.remove("show");
+    state.amount = n; render();
+  });
+});
+addChip("Своё", "любая", function (el) {
+  clearOn(); el.classList.add("on");
+  state.custom = true; cField.classList.add("show");
+  customInput.focus();
+  state.amount = parseInt(customInput.value, 10) || 0; render();
+});
+
+customInput.addEventListener("input", function () {
+  customInput.value = customInput.value.replace(/\D/g, "");
+  state.amount = parseInt(customInput.value, 10) || 0;
+  render();
+});
+
+// ===== Юзернейм =====
+var userInput = document.getElementById("user");
+var uField = document.getElementById("uField");
+var USER_RE = /^[A-Za-z][A-Za-z0-9_]{4,31}$/;
+
+function cleanUser() { return userInput.value.trim().replace(/^@+/, ""); }
+userInput.addEventListener("input", function () {
+  userInput.value = userInput.value.replace(/^@+/, "").replace(/\s/g, "");
+  uField.classList.remove("bad");
+  render();
+});
+
+// ===== Отрисовка кнопки =====
+var buy = document.getElementById("buy");
+var msg = document.getElementById("msg");
+
+function amountOk() {
+  if (!state.amount) return false;
+  if (state.custom) return state.amount >= CONFIG.minCustom && state.amount <= CONFIG.maxCustom;
+  return true;
+}
+function setMsg(t, err) { msg.textContent = t || ""; msg.className = "msg" + (err ? " err" : ""); }
+
+function render() {
+  if (!state.amount) {
+    buy.disabled = true; buy.textContent = "Выберите сумму"; setMsg(""); return;
+  }
+  if (!amountOk()) {
+    buy.disabled = true; buy.textContent = "Выберите сумму";
+    setMsg("Минимум " + CONFIG.minCustom + " ★", true); return;
+  }
+  setMsg("");
+  buy.disabled = false;
+  buy.textContent = "Купить ★ " + fmt(state.amount) + " · " + price(state.amount);
+}
+
+buy.addEventListener("click", function () {
+  var u = cleanUser();
+  if (!USER_RE.test(u)) {
+    uField.classList.add("bad");
+    setMsg("Проверьте username: 5–32 символа, латиница, цифры и _", true);
+    haptic("medium");
+    userInput.focus();
+    return;
+  }
+  var payload = { username: u, stars: state.amount, price: Math.round(state.amount * CONFIG.pricePerStar * 100) / 100, currency: CONFIG.currency };
+  haptic("medium");
+  if (tg && tg.sendData) {
+    tg.sendData(JSON.stringify(payload)); // уйдёт боту и закроет Mini App
+  } else {
+    setMsg("Демо-режим: заказ для @" + u + " на ★ " + fmt(state.amount) + " (вне Telegram данные не отправляются)");
+  }
+});
+
+render();
+</script>
+</body>
+</html>
