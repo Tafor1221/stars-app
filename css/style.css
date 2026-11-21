@@ -7,14 +7,13 @@
   --fb-bg: #f7f7f5;
   --fb-text: #141414;
   --fb-hint: #6f6f6a;
-  --seg-active: #ffffff;
 
   --bg: var(--tg-theme-bg-color, var(--fb-bg));
   --text: var(--tg-theme-text-color, var(--fb-text));
   --hint: var(--tg-theme-hint-color, var(--fb-hint));
   --error: var(--tg-theme-destructive-text-color, #e5484d);
+  --ok: #2fb344;
 
-  --track: color-mix(in srgb, var(--text) 7%, var(--bg));
   --line: color-mix(in srgb, var(--text) 18%, transparent);
 
   /* отступы с учётом вырезов экрана и элементов Telegram */
@@ -22,15 +21,9 @@
   --pad-bottom: calc(20px + max(env(safe-area-inset-bottom, 0px), var(--tg-safe-area-inset-bottom, 0px)));
 }
 @media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --fb-bg: #1a1b1e; --fb-text: #f2f4f8; --fb-hint: #9aa3b2;
-    --seg-active: color-mix(in srgb, var(--text) 15%, var(--bg));
-  }
+  :root:not([data-theme="light"]) { --fb-bg: #1a1b1e; --fb-text: #f2f4f8; --fb-hint: #9aa3b2; }
 }
-:root[data-theme="dark"] {
-  --fb-bg: #1a1b1e; --fb-text: #f2f4f8; --fb-hint: #9aa3b2;
-  --seg-active: color-mix(in srgb, var(--text) 15%, var(--bg));
-}
+:root[data-theme="dark"] { --fb-bg: #1a1b1e; --fb-text: #f2f4f8; --fb-hint: #9aa3b2; }
 
 /* ---------- Базовое ---------- */
 * { box-sizing: border-box; margin: 0; -webkit-tap-highlight-color: transparent; }
@@ -65,81 +58,66 @@ button { touch-action: manipulation; }
 .stat { display: grid; line-height: 1.25; }
 .stat--right { justify-items: end; }
 .stat__value { font-size: 17px; font-weight: 700; letter-spacing: -0.01em; font-variant-numeric: tabular-nums; }
-.stat__value--regular { font-size: 15px; font-weight: 600; }
+.stat__value--regular { font-size: 15px; font-weight: 600; display: inline-flex; align-items: center; gap: 7px; }
+.status-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--ok); }
+.status-dot.is-off { background: var(--error); }
 
-/* ---------- Количество ---------- */
-.hero { display: grid; gap: 2px; cursor: text; }
-.hero__input {
-  width: 100%;
-  padding: 0;
-  border: 0;
-  outline: 0;
-  background: transparent;
-  color: var(--text);
-  font: inherit;
-  font-size: clamp(56px, 20vw, 80px);
+/* ---------- Сколько осталось ---------- */
+.hero { display: grid; gap: 2px; }
+.hero__row { display: flex; align-items: baseline; gap: 10px; }
+.hero__value {
+  font-size: clamp(52px, 18vw, 72px);
   font-weight: 600;
   line-height: 1.05;
   letter-spacing: -0.05em;
   font-variant-numeric: tabular-nums;
 }
-.hero__input::placeholder { color: color-mix(in srgb, var(--hint) 45%, transparent); }
+.hero__unit { font-size: 22px; font-weight: 500; color: var(--hint); }
 .hero__hint { min-height: 22px; font-size: 15px; color: var(--hint); }
-.hero__hint.is-error { color: var(--error); }
 
-/* ---------- Быстрый выбор (сегменты) ---------- */
-.chips { display: flex; gap: 2px; padding: 3px; border-radius: 12px; background: var(--track); }
-.chip {
-  flex: 1;
-  height: 34px;
-  border: 0;
-  border-radius: 9px;
-  background: transparent;
-  color: var(--hint);
-  font: inherit;
-  font-size: 14px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: background 0.15s, color 0.15s;
-}
-.chip.is-active { background: var(--seg-active); color: var(--text); font-weight: 600; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.14); }
-
-/* ---------- Получатель ---------- */
-.field {
+/* ---------- Устройства ---------- */
+.row {
   display: flex;
   align-items: center;
-  gap: 6px;
+  justify-content: space-between;
   height: 48px;
   border-bottom: 1.5px solid var(--line);
-  transition: border-color 0.15s;
 }
-.field:focus-within { border-color: var(--text); }
-.field__prefix { color: var(--hint); font-size: 17px; }
-.field input {
-  flex: 1;
-  min-width: 0;
-  border: 0;
-  outline: 0;
-  background: transparent;
-  color: var(--text);
-  font: inherit;
-  font-size: 17px;
-}
-.field input::placeholder { color: var(--hint); }
-.field__action {
-  height: 30px;
-  padding: 0 14px;
-  border: 1px solid var(--line);
-  border-radius: 15px;
-  background: transparent;
-  color: var(--text);
-  font: inherit;
-  font-size: 13px;
-  font-weight: 600;
-  cursor: pointer;
-}
+.row__label { font-size: 17px; }
+.row__value { display: flex; align-items: center; gap: 12px; font-size: 17px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.dots { display: flex; gap: 5px; }
+.dots i { width: 8px; height: 8px; border-radius: 50%; border: 1.5px solid var(--line); }
+.dots i.is-on { background: var(--text); border-color: var(--text); }
 
-/* ---------- Кнопка и статус ---------- */
+/* ---------- Страны ---------- */
+.countries { display: grid; gap: 8px; }
+.countries__head { display: flex; justify-content: space-between; }
+.countries__strip {
+  display: flex;
+  gap: 8px;
+  /* лента выходит к краям экрана, чтобы было видно, что её можно листать */
+  margin: 0 calc(var(--pad-x) * -1);
+  padding: 0 var(--pad-x);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.countries__strip::-webkit-scrollbar { display: none; }
+.country {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 36px;
+  padding: 0 14px 0 8px;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  font-size: 14px;
+  font-weight: 500;
+}
+.flag { width: 20px; height: 20px; flex: none; border-radius: 50%; box-shadow: 0 0 0 1px var(--line); }
+.flag--code { display: grid; place-items: center; font-size: 8px; font-weight: 700; color: var(--hint); }
+
+/* ---------- Кнопка ---------- */
 .submit {
   display: flex;
   align-items: center;
@@ -154,24 +132,19 @@ button { touch-action: manipulation; }
   font-size: 17px;
   font-weight: 600;
   cursor: pointer;
-  transition: transform 0.1s, opacity 0.15s;
+  transition: transform 0.1s;
 }
-.submit:active:not(:disabled) { transform: scale(0.98); }
-.submit:disabled { opacity: 0.3; cursor: default; }
-.status { text-align: center; font-size: 13px; color: var(--hint); }
-.status:empty { display: none; }
-.status--error { color: var(--error); }
+.submit:active { transform: scale(0.98); }
 
-/* ---------- Низкое окно (compact на маленьких экранах, открытая клавиатура) ---------- */
+/* ---------- Низкое окно (compact на маленьких экранах) ---------- */
 @media (max-height: 520px) {
   .app { gap: 14px; }
-  .hero__input { font-size: clamp(48px, 16vw, 64px); }
+  .hero__value { font-size: clamp(44px, 15vw, 60px); }
+  .row { height: 42px; }
 }
-@media (max-height: 420px) {
+@media (max-height: 440px) {
   .app { gap: 10px; padding-top: 4px; }
-  .hero__input { font-size: 48px; }
   .hero__hint { min-height: 18px; }
-  .field { height: 44px; }
   .submit { height: 50px; }
 }
 

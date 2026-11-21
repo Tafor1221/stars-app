@@ -23,22 +23,18 @@ export function initTelegram() {
   // tg.expand() не вызываем, поэтому окно остаётся в compact-режиме
 }
 
-// Username текущего пользователя (пустая строка, если не задан)
-export function getOwnUsername() {
-  return tg?.initDataUnsafe?.user?.username ?? '';
-}
-
 // Лёгкая вибрация: 'light' | 'medium' | 'heavy'
 export function haptic(type = 'light') {
   tg?.HapticFeedback?.impactOccurred(type);
 }
 
-// Отправка заказа боту. Возвращает false, если мы не в Telegram.
+// Отправка сообщения боту (приложение после этого закроется).
+// Возвращает false, если мы не в Telegram.
 // Важно: sendData работает, только если Mini App открыт кнопкой reply-клавиатуры.
-// Если открываешь через Menu Button, заказ надо слать на свой сервер через fetch(),
+// Если открываешь через Menu Button, данные надо слать на свой сервер через fetch(),
 // передавая tg.initData, чтобы сервер мог проверить подлинность.
-export function sendOrder(order) {
+export function sendToBot(payload) {
   if (!inTelegram) return false;
-  tg.sendData(JSON.stringify(order));
+  tg.sendData(JSON.stringify(payload));
   return true;
 }

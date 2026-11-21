@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="color-scheme" content="light dark">
-  <title>Telegram Stars</title>
+  <title>VPN</title>
 
   <!-- SDK Telegram: даёт window.Telegram.WebApp и CSS-переменные темы (--tg-theme-*) -->
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
@@ -13,42 +13,53 @@
 <body>
   <main class="app">
 
-    <!-- Шапка: баланс и курс -->
+    <!-- Шапка: баланс и статус подписки -->
     <header class="header">
       <div class="stat">
         <span class="caption">Баланс</span>
         <span class="stat__value" id="balance">0 ₽</span>
       </div>
       <div class="stat stat--right">
-        <span class="caption">Курс</span>
-        <span class="stat__value stat__value--regular" id="rate"></span>
+        <span class="caption">Статус</span>
+        <span class="stat__value stat__value--regular">
+          <span class="status-dot" id="statusDot"></span><span id="status">—</span>
+        </span>
       </div>
     </header>
 
-    <!-- Количество: нажатие в любом месте блока ставит курсор в число -->
-    <label class="hero">
-      <span class="caption">Количество звёзд</span>
-      <input class="hero__input" id="amount" type="text" inputmode="numeric" enterkeyhint="next"
-             autocomplete="off" maxlength="6" placeholder="0">
-      <span class="hero__hint" id="hint"></span>
-    </label>
+    <!-- Сколько осталось: дни, а в последний день часы -->
+    <section class="hero">
+      <span class="caption">Подписка</span>
+      <div class="hero__row">
+        <span class="hero__value" id="timeValue">0</span>
+        <span class="hero__unit" id="timeUnit">дней</span>
+      </div>
+      <span class="hero__hint" id="timeHint"></span>
+    </section>
 
-    <!-- Быстрый выбор -->
-    <div class="chips" id="chips"></div>
+    <!-- Устройства -->
+    <div class="row">
+      <span class="row__label">Устройства</span>
+      <span class="row__value">
+        <span class="dots" id="dots"></span>
+        <span id="devices">0/0</span>
+      </span>
+    </div>
 
-    <!-- Получатель -->
-    <label class="field">
-      <span class="field__prefix">@</span>
-      <input id="username" type="text" enterkeyhint="done" autocomplete="off" autocapitalize="off"
-             spellcheck="false" maxlength="32" placeholder="username получателя">
-      <button type="button" class="field__action" id="self">Себе</button>
-    </label>
+    <!-- Страны -->
+    <section class="countries">
+      <div class="countries__head">
+        <span class="caption">Доступные страны</span>
+        <span class="caption" id="countriesCount"></span>
+      </div>
+      <div class="countries__strip" id="countries"></div>
+    </section>
 
-    <button type="button" class="submit" id="submit" disabled>
-      <span>Купить</span>
-      <span id="price">—</span>
+    <button type="button" class="submit" id="renew">
+      <span>Продлить подписку</span>
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+           stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
     </button>
-    <p class="status" id="status"></p>
 
   </main>
 
